@@ -88,6 +88,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(400).json({ error: 'Paste a message to decode' });
     return;
   }
+  // A message being decoded is a chat message, not an essay. Capping length
+  // bounds the cost of any single call against the paid Anthropic API.
+  if (message.length > 4000) {
+    res.status(400).json({ error: 'That message is too long to decode. Try trimming it.' });
+    return;
+  }
 
   try {
     const result = await callClaude(message, context);
