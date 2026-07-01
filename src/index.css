@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+@theme {
+  /* Colors: from DESIGN.md. Loudmouth Pink and Whistleblower Yellow never
+     appear in the before-state (The Latent Colour Rule). */
+  --color-loudmouth-pink: #ff2e93;
+  /* Text-safe tint of Loudmouth Pink. FF2E93 fails WCAG AA as text on both
+     beige (2.97:1) and white (3.46:1); this deeper tint clears both (5.61:1,
+     6.56:1). Reserved for pink text; the vivid tone stays for fills, borders
+     and the meter, judged on non-text contrast instead. */
+  --color-loudmouth-pink-ink: #b8005f;
+  --color-whistleblower-yellow: #f5d300;
+  --color-break-room-beige: #f3ece9;
+  --color-laminate-grey: #6b6467;
+  --color-ink: #1f1a1d;
+  --color-institutional-border: #d8d0cc;
+
+  /* Typography: one display family at two intensities (The Same Voice Rule),
+     General Sans for body, Space Mono for anything performing officialdom. */
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "General Sans", system-ui, sans-serif;
+  --font-meta: "Space Mono", monospace;
+
+  /* Motion: ease-out only, no bounce or elastic. */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-break-room-beige);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+  }
+}
+
+@layer utilities {
+  /* Hard offset shadow, no blur. The reply cards' "stamped" elevation. */
+  .shadow-stamped {
+    box-shadow: 4px 4px 0 var(--color-ink);
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-reveal-in {
+    animation: reveal-in 0.5s var(--ease-reveal) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-reveal-in {
+      animation-duration: 0.01ms;
+    }
+  }
+}

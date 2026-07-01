@@ -1,32 +1,44 @@
-# React + TypeScript + Vite
+# Decode This
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Paste a message that says one thing and means another (passive-aggressive,
+over-polite, vague, loaded). Decode This strips the politeness, shows the
+subtext, and hands back three replies: diplomatic, straight, unhinged.
 
-Currently, two official plugins are available:
+A hackathon build and a portfolio piece. The joke and the utility are the
+same thing.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+Vite, React, TypeScript, Tailwind v4. The Anthropic API is called through a
+Vercel serverless function in `/api`, so the key never reaches the client.
+No database, no auth, no server-side storage of messages: decode and
+discard.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Running locally
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+vercel dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`vercel dev` is required, not `npm run dev`: the Vite dev server alone
+doesn't run the `/api` serverless function. Add your key to a `.env` file
+at the project root first (see `.env.example`):
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+## Project docs
+
+- [`PRODUCT.md`](PRODUCT.md) — who this is for, the brand personality, the
+  design principles.
+- [`DESIGN.md`](DESIGN.md) — the locked visual system: colours, type,
+  motion, elevation, do's and don'ts.
+- `.claude/CLAUDE.md` — coding rules and project context for AI-assisted
+  building.
+
+## Status
+
+Built in stages: scaffold, working loop, design direction, full styled
+interface. Not yet deployed.
