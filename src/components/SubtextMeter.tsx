@@ -10,14 +10,20 @@ interface SubtextMeterProps {
 // marks the extreme register only, never a gradient blend between the two).
 export function SubtextMeter({ level, label }: SubtextMeterProps) {
   const clamped = Math.max(0, Math.min(100, level));
-  const [animatedLevel, setAnimatedLevel] = useState(0);
+  const reduceMotion =
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [animatedLevel, setAnimatedLevel] = useState(reduceMotion ? clamped : 0);
 
   useEffect(() => {
+    if (reduceMotion) {
+      setAnimatedLevel(clamped);
+      return;
+    }
     // Mount at 0, then move to the real value on the next frame so the
     // stroke-dashoffset transition actually has a change to animate.
     const frame = requestAnimationFrame(() => setAnimatedLevel(clamped));
     return () => cancelAnimationFrame(frame);
-  }, [clamped]);
+  }, [clamped, reduceMotion]);
 
   const radius = 80;
   const circumference = Math.PI * radius; // half circle
@@ -45,7 +51,7 @@ export function SubtextMeter({ level, label }: SubtextMeterProps) {
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.8s var(--ease-reveal)' }}
+          style={{ transition: reduceMotion ? 'none' : 'stroke-dashoffset 0.8s var(--ease-reveal)' }}
         />
         <path
           d="M 10 90 A 80 80 0 0 1 170 90"
@@ -55,7 +61,9 @@ export function SubtextMeter({ level, label }: SubtextMeterProps) {
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.8s var(--ease-reveal), stroke 0.3s ease-out' }}
+          style={{
+            transition: reduceMotion ? 'none' : 'stroke-dashoffset 0.8s var(--ease-reveal), stroke 0.3s ease-out',
+          }}
         />
         <text x="90" y="80" textAnchor="middle" className="font-display text-[2.5rem] font-extrabold fill-ink">
           {clamped}

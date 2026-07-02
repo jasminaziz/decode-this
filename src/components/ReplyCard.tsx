@@ -30,12 +30,18 @@ const VARIANT_LABEL_STYLES: Record<Variant, string> = {
 };
 
 export function ReplyCard({ variant, text, delayMs }: ReplyCardProps) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    // Clipboard access can be refused (in-app webviews, permissions); say so
+    // rather than failing silently.
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyState('copied');
+    } catch {
+      setCopyState('failed');
+    }
+    setTimeout(() => setCopyState('idle'), 1500);
   }
 
   return (
@@ -53,12 +59,14 @@ export function ReplyCard({ variant, text, delayMs }: ReplyCardProps) {
             {variant}
           </span>
         )}
+        {/* Negative margin cancels the padding visually, so the tap target
+            reaches 44px without shifting the layout. */}
         <button
           type="button"
           onClick={handleCopy}
-          className="font-meta text-xs tracking-wide uppercase underline underline-offset-2"
+          className="-m-3 p-3 font-meta text-xs tracking-wide uppercase underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ink"
         >
-          {copied ? 'copied' : 'copy'}
+          {copyState === 'idle' ? 'copy' : copyState === 'copied' ? 'copied' : 'copy failed'}
         </button>
       </div>
       <p className="font-body text-[15px] leading-relaxed">{text}</p>

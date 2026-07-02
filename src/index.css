@@ -57,6 +57,10 @@
   @media (prefers-reduced-motion: reduce) {
     .animate-reveal-in {
       animation-duration: 0.01ms;
+      /* The stagger delays are inline styles; without this override they
+         hold each element invisible for up to 750ms even with the
+         animation itself disabled. */
+      animation-delay: 0ms !important;
     }
   }
 }
