@@ -70,7 +70,7 @@ function App() {
           className="border-institutional-border placeholder:text-laminate-grey/70 mb-4 w-full max-w-[70ch] resize-none border bg-white p-3 font-body text-[15px] text-ink focus:border-ink focus:outline-none"
         />
 
-        <p className="font-meta mb-2 text-xs tracking-wide text-laminate-grey uppercase">Context (optional)</p>
+        <p className="font-meta mb-2 text-xs tracking-wide text-laminate-grey uppercase">From (optional)</p>
         <ContextChips selected={context} onChange={setContext} />
 
         <button

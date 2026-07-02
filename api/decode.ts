@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Anthropic from '@anthropic-ai/sdk';
 
-const SYSTEM_PROMPT = `You decode what people actually mean. The user pastes a message that says one thing and means another: passive-aggressive, over-polite, vague, or loaded. Read it and return the truth underneath, plainly and with dry wit. Never cruel. Never therapy-speak. If a context is given (boss, client, group chat, mum), let it sharpen the read.
+const SYSTEM_PROMPT = `You decode what people actually mean. The user pastes a message that says one thing and means another: passive-aggressive, over-polite, vague, or loaded. Read it and return the truth underneath, plainly and with dry wit. Never cruel. Never therapy-speak. If a context is given (who the message is from), let it sharpen the read.
 
 Return only JSON, no preamble, in exactly this shape:
 {
@@ -55,7 +55,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 async function callClaude(message: string, context?: string): Promise<DecodeResult> {
   const userContent = context
-    ? `Context: from my ${context}\n\nMessage: ${message}`
+    ? `Context: this message is from the user's ${context}\n\nMessage: ${message}`
     : `Message: ${message}`;
 
   const response = await anthropic.messages.create({
