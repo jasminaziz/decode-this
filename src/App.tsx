@@ -18,13 +18,32 @@ interface DecodeResult {
 // Mirrors the server-side cap in api/decode.ts so nobody finds out at submit.
 const MAX_MESSAGE_LENGTH = 4000;
 
+// The decode takes several seconds; the wait is played as institutional
+// process. Ink and grey only: loading is before the reveal, so The Latent
+// Colour Rule applies.
+const LOADING_LINES = [
+  'Reading between the lines…',
+  'Assessing sincerity levels…',
+  'Measuring passive aggression…',
+  'Consulting HR…',
+  'Drafting replies…',
+];
+
 function App() {
   const [message, setMessage] = useState('');
   const [context, setContext] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<DecodeResult | null>(null);
+  const [loadingLine, setLoadingLine] = useState(0);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!loading) return;
+    setLoadingLine(0);
+    const id = setInterval(() => setLoadingLine((i) => (i + 1) % LOADING_LINES.length), 1800);
+    return () => clearInterval(id);
+  }, [loading]);
 
   // The reveal announces itself: scroll the translation into view when it
   // lands, instantly rather than smoothly under prefers-reduced-motion.
@@ -133,6 +152,20 @@ function App() {
       {error && (
         <div className="border-ink mt-4 border-2 bg-white px-4 py-3" role="alert">
           <p className="font-meta text-sm tracking-wide text-ink uppercase">{error}</p>
+        </div>
+      )}
+
+      {/* Loading theatre: a processing docket where the results will land.
+          aria-hidden because the focused button already announces
+          "Decoding" once; a new line every 1.8s would be noise. */}
+      {loading && (
+        <div className="border-institutional-border mt-4 border bg-white px-4 py-3" aria-hidden="true">
+          <p
+            key={loadingLine}
+            className="animate-reveal-in font-meta text-sm tracking-wide text-laminate-grey uppercase"
+          >
+            {LOADING_LINES[loadingLine]}
+          </p>
         </div>
       )}
 
