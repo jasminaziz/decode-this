@@ -166,10 +166,18 @@ function App() {
               </div>
             )}
 
-            <div className="space-y-4">
-              <ReplyCard variant="diplomatic" text={result.replies.diplomatic} delayMs={450} />
-              <ReplyCard variant="straight" text={result.replies.straight} delayMs={600} />
-              <ReplyCard variant="unhinged" text={result.replies.unhinged} delayMs={750} />
+            <div>
+              <p
+                className="animate-reveal-in font-meta mb-2 text-xs tracking-wide text-laminate-grey uppercase"
+                style={{ animationDelay: '450ms' }}
+              >
+                Replies you could send
+              </p>
+              <div className="space-y-4">
+                <ReplyCard variant="diplomatic" text={result.replies.diplomatic} delayMs={450} />
+                <ReplyCard variant="straight" text={result.replies.straight} delayMs={600} />
+                <ReplyCard variant="unhinged" text={result.replies.unhinged} delayMs={750} />
+              </div>
             </div>
           </div>
         )}
