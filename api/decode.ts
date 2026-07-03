@@ -54,8 +54,10 @@ function isDecodeResult(value: unknown): value is DecodeResult {
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 async function callClaude(message: string, context?: string): Promise<DecodeResult> {
+  // Phrasing-neutral so both preset nouns ("boss") and free text from the
+  // "other" field ("my landlord", "Dave from accounts") read correctly.
   const userContent = context
-    ? `Context: this message is from the user's ${context}\n\nMessage: ${message}`
+    ? `Context: who the message is from: ${context}\n\nMessage: ${message}`
     : `Message: ${message}`;
 
   const response = await anthropic.messages.create({
@@ -92,6 +94,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // bounds the cost of any single call against the paid Anthropic API.
   if (message.length > 4000) {
     res.status(400).json({ error: 'That message is too long to decode. Try trimming it.' });
+    return;
+  }
+  // The interface caps the free-text context at 40 characters; this is the
+  // matching server-side guard.
+  if (context !== undefined && context !== null && (typeof context !== 'string' || context.length > 100)) {
+    res.status(400).json({ error: 'That context is too long. Keep it short.' });
     return;
   }
 
